@@ -1,8 +1,9 @@
 # necessary import
+import json
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-from sklearn.datasets import load_iris # load_digits load_wine load_iris
+from sklearn.datasets import load_iris 
 from sklearn.preprocessing import StandardScaler, LabelEncoder
 from sklearn.model_selection import train_test_split
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
@@ -10,14 +11,26 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score, confusion_matrix
 
 # load the iris dataset
-iris = load_iris() # load_digits() load_wine() load_iris()
+iris = load_iris()
 dataset = pd.DataFrame(columns=iris.feature_names,
                        data=iris.data)
 dataset['target'] = iris.target
 
+print(dataset)
+
+# sepal length (cm)  sepal width (cm)  petal length (cm)  petal width (cm)
+
+# dataset.drop(columns=['sepal length (cm)', 'sepal width (cm)'], inplace=True)
+
+print(dataset)
+
 # divide the dataset into class and target variable
-X = dataset.iloc[:, 0:4].values
-y = dataset.iloc[:, 4].values
+# X = dataset.iloc[:, 0:4].values # class
+X = dataset.iloc[:, 0:4].values # class
+y = dataset.iloc[:, 4].values # target
+
+print(X)
+print(y)
 
 # Preprocess the dataset and divide into train and test
 sc = StandardScaler()
@@ -32,6 +45,8 @@ X_train, X_test,\
 lda = LinearDiscriminantAnalysis(n_components=2)
 X_train = lda.fit_transform(X_train, y_train)
 X_test = lda.transform(X_test)
+
+print(X_train)
 
 # plot the scatterplot
 plt.scatter(
@@ -54,17 +69,22 @@ print(conf_m)
 
 
 # Get the coefficients and intercept of the decision boundary
-w = lda.coef_[0]
-b = lda.intercept_[0]
+w1 = lda.coef_[0]
+b1 = lda.intercept_[0]
+
+w2 = lda.coef_[1]
+b2 = lda.intercept_[1]
 
 # Create a range of x values for plotting the line
 x_range = np.linspace(X_train[:, 0].min() - 1, X_train[:, 0].max() + 1, 100)
 
 # Calculate the corresponding y values for the line
-y_line = (-w[0]/w[1]) * x_range - b/w[1]
+y_line1 = (-w1[0]/w1[1]) * x_range - b1/w1[1]
+y_line2 = (-w2[0]/w2[1]) * x_range - b2/w2[1]
 
 # Plot the decision boundary line
-plt.plot(x_range, y_line, color='red', label='Decision Boundary')
+plt.plot(x_range, y_line1, color='red', label='Decision Boundary')
+plt.plot(x_range, y_line2, color='green', label='Decision Boundary')
 
 # Set labels and title
 plt.xlabel("Feature 1")
