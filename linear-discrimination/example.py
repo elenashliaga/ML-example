@@ -2,7 +2,7 @@
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-from sklearn.datasets import load_iris
+from sklearn.datasets import load_breast_cancer # load_digits load_wine load_iris
 from sklearn.preprocessing import StandardScaler, LabelEncoder
 from sklearn.model_selection import train_test_split
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
@@ -10,7 +10,7 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score, confusion_matrix
 
 # load the iris dataset
-iris = load_iris()
+iris = load_breast_cancer() # load_digits() #load_wine() load_iris()
 dataset = pd.DataFrame(columns=iris.feature_names,
                        data=iris.data)
 dataset['target'] = iris.target
@@ -51,3 +51,28 @@ y_pred = classifier.predict(X_test)
 print('Accuracy : ' + str(accuracy_score(y_test, y_pred)))
 conf_m = confusion_matrix(y_test, y_pred)
 print(conf_m)
+
+
+# Get the coefficients and intercept of the decision boundary
+w = lda.coef_[0]
+b = lda.intercept_[0]
+
+# Create a range of x values for plotting the line
+x_range = np.linspace(X_train[:, 0].min() - 1, X_train[:, 0].max() + 1, 100)
+
+# Calculate the corresponding y values for the line
+y_line = (-w[0]/w[1]) * x_range - b/w[1]
+
+# Plot the decision boundary line
+plt.plot(x_range, y_line, color='red', label='Decision Boundary')
+
+# Set labels and title
+plt.xlabel("Feature 1")
+plt.ylabel("Feature 2")
+plt.title("Linear Discrimination")
+
+# Add legend
+plt.legend()
+
+# Show the plot
+plt.show()
