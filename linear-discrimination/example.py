@@ -2,7 +2,7 @@
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-from sklearn.datasets import load_breast_cancer # load_digits load_wine load_iris
+from sklearn.datasets import load_iris # load_digits load_wine load_iris
 from sklearn.preprocessing import StandardScaler, LabelEncoder
 from sklearn.model_selection import train_test_split
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
@@ -10,7 +10,7 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score, confusion_matrix
 
 # load the iris dataset
-iris = load_breast_cancer() # load_digits() #load_wine() load_iris()
+iris = load_iris() # load_digits() load_wine() load_iris()
 dataset = pd.DataFrame(columns=iris.feature_names,
                        data=iris.data)
 dataset['target'] = iris.target
