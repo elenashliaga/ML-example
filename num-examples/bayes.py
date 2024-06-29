@@ -1,15 +1,3 @@
-# from sklearn.datasets import load_iris
-# from sklearn.model_selection import train_test_split
-# from sklearn.naive_bayes import GaussianNB
-# X, y = load_iris(return_X_y=True)
-# X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.5, random_state=0)
-# gnb = GaussianNB()
-# y_pred = gnb.fit(X_train, y_train).predict(X_test)
-# print("Number of mislabeled points out of a total %d points : %d"
-#       % (X_test.shape[0], (y_test != y_pred).sum()))
-
-# ----
-   
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.naive_bayes import GaussianNB
@@ -33,21 +21,22 @@ y = dataset.iloc[:, 4].values # target
 le = LabelEncoder()
 y = le.fit_transform(y)
  
-# Split the data into training and testing sets
+# Подготовьте набор данных и разделите его на тренировочный и тестовый
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
 
-# Gaussian Naive Bayes classifier
+# Gaussian Naive Bayes классификатор
 gnb = GaussianNB()
  
-# Train the classifier on the training data
+# Обучите классификатор
 gnb.fit(X_train, y_train)
 
-# Make predictions on the testing data
+# Найдите классы для тестового набора
 y_pred = gnb.predict(X_test)
  
-# Calculate the accuracy of the model
+# Рассчитайте точность модели
 accuracy = accuracy_score(y_test, y_pred)
-print(f"The Accuracy of Prediction on Iris Flower is: {accuracy}")
+print(f"Точность предсказания цветка ириса: {accuracy}")
 
+# Постройте матрицу ошибок
 conf_m = confusion_matrix(y_test, y_pred)
 print(conf_m)

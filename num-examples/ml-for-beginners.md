@@ -56,3 +56,166 @@
 ![](bayes-1.png)
 
 ## Реализация в коде
+
+Для примеров с кодом я возьму [библиотеку scikit-learn](https://scikit-learn.org/stable/index.html). Она содержит не только все основные реализации моделей для обучения, но и примеры их использования и всю нужную теорию. Большую часть информации для статьи я взяла там.
+
+### Пример реализации линейного дискриминантного анализа (LDA)
+
+#### Шаг 1. Ипорт библиотек и загрузка датасета
+
+Среди библиотек помимо scikit-learn понадобятся numpy, pandas, matplotlib. Скачайте их, если они еще не установлены.
+
+В коде ниже после импорта идет загрузка готового датасета от scikit-learn. На нем будет проще всего разобрать линейный дискриминантный анализ (LDA).
+
+Датасет состоит из длины и ширины лепестка и чашелистика, в последней колонке указано класс ириса (0, 1 или 2):
+
+![](dataset-iris.png)
+
+Импортируйте библиотеки и загрузите датасет:
+
+```python
+# необходимый импорт
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+from sklearn.datasets import load_iris
+from sklearn.preprocessing import StandardScaler, LabelEncoder
+from sklearn.model_selection import train_test_split
+from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import accuracy_score, confusion_matrix
+
+# Загрузите датасет
+iris = load_iris()
+dataset = pd.DataFrame(columns=iris.feature_names,
+                       data=iris.data)
+dataset['target'] = iris.target
+```
+
+#### Шаг 2. Разбейте датасет на тренировочный и тестовый
+
+Важно, не забыть об этом шаге. Иначае не будет тестовых данных для проверки модели. Обычно разбивают в соотношении 80% на тренировочный набор, 20% на тестовый.
+
+Разбейте датасет:
+
+```python
+# Разделите набор данных на характеристики класса и указанный класс
+X = dataset.iloc[:, 0:4].values # характеристики
+y = dataset.iloc[:, 4].values # класс
+
+# Подготовьте набор данных и разделите его на тренировочный и тестовый
+sc = StandardScaler()
+X = sc.fit_transform(X)
+le = LabelEncoder()
+y = le.fit_transform(y)
+X_train, X_test,\
+    y_train, y_test = train_test_split(X, y,
+                                       test_size=0.2)
+```
+
+#### Шаг 3. Проведите линейный дискременантный анализ (LDA)
+
+Несмотря на то, что математических моделей достаточно много, большинство из них уже реализованы в каких-нибудь библиотеках и их не нужно прописывать самостоятельно.
+
+Проведите LDA и постройте диаграмму с данными для будущей визуализации:
+
+```python
+# Проведите линейный дискременантный анализ (lda)
+lda = LinearDiscriminantAnalysis(n_components=2)
+X_train = lda.fit_transform(X_train, y_train)
+X_test = lda.transform(X_test)
+
+# Постройте диаграмму с данными
+plt.scatter(
+    X_train[:, 0], X_train[:, 1],
+    c=y_train,
+    cmap='rainbow',
+    alpha=0.7, edgecolors='b'
+)
+```
+
+#### Шаг 4. Обучите модель, проверьте ее на тестовом наборе и выведите матрицу ошибок
+
+
+```python
+# Классифицируйте с помощью RandomForestClassifier
+classifier = RandomForestClassifier(max_depth=2,
+                                    random_state=0)
+classifier.fit(X_train, y_train) # функция fit обучает модель на тренировочном наборе
+y_pred = classifier.predict(X_test) # функция predict классифицирует тестовый набор
+
+# Выведите точность и матрицу ошибок
+
+print('Точность : ' + str(accuracy_score(y_test, y_pred)))
+conf_m = confusion_matrix(y_test, y_pred)
+print(conf_m)
+```
+
+Матрица ошибок показывает, какую часть классификатор определил неверно. На главной диагонали количество верных определений, на побочных -- ложных. Так как в датасете три класса, матрица имеет три строки и три столбца.
+
+![](sphx_glr_plot_confusion_matrix_001.png)
+
+### Наивный байесовский классификатор
+
+Наивный байесовский классификатор реализуется похожим образом.
+
+#### Шаг 1. Ипорт библиотек и загрузка датасета
+
+```python
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.naive_bayes import GaussianNB
+from sklearn.metrics import accuracy_score, confusion_matrix
+from sklearn.preprocessing import LabelEncoder
+from sklearn.datasets import load_iris
+   
+# Загрузите датасет
+iris = load_iris()
+dataset = pd.DataFrame(columns=iris.feature_names,
+                       data=iris.data)
+dataset['target'] = iris.target
+```
+
+#### Шаг 2. Подготовьте данные и обучите модель
+
+```python
+# Разделите набор данных на характеристики класса и указанный класс
+X = dataset.iloc[:, 0:4].values # характеристики
+y = dataset.iloc[:, 4].values # класс
+
+# Перевод вида ириса в число
+le = LabelEncoder()
+y = le.fit_transform(y)
+ 
+# Подготовьте набор данных и разделите его на тренировочный и тестовый
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
+
+# Gaussian Naive Bayes классификатор
+gnb = GaussianNB()
+ 
+# Обучите классификатор
+gnb.fit(X_train, y_train)
+
+# Найдите классы для тестового набора
+y_pred = gnb.predict(X_test)
+```
+
+#### Шаг 3. Посчитайте точность модели и матрицу ошибок
+
+```python
+# Рассчитайте точность модели
+accuracy = accuracy_score(y_test, y_pred)
+print(f"Точность предсказания цветка ириса: {accuracy}")
+
+# Постройте матрицу ошибок
+conf_m = confusion_matrix(y_test, y_pred)
+print(conf_m)
+```
+
+## Послесловие
+
+Надеюсь, что машинное обучение открылось вам с новой стороны. Если будут вопросы, обязательно задавайте их в комметрариях. 
+
+Если вам интересны и другие мои работы, то подписывайтесь на мой канал в телеграме -- @quizzes4fun.
+
+Рада, что вы дошли до конца статьи. До новых встреч!
