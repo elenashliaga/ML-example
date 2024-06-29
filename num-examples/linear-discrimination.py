@@ -63,7 +63,7 @@ b2 = lda.intercept_[1]
 x_range = np.linspace(X_train[:, 0].min() - 1, X_train[:, 0].max() + 1, 100)
 y_line1 = (-w1[0]/w1[1]) * x_range - b1/w1[1]
 y_line2 = (-w2[0]/w2[1]) * x_range - b2/w2[1]
-plt.plot(x_range, y_line1, color='red', label='Decision Boundary')
+# plt.plot(x_range, y_line1, color='red', label='Decision Boundary')
 plt.plot(x_range, y_line2, color='green', label='Decision Boundary')
 plt.xlabel("Feature 1")
 plt.ylabel("Feature 2")
