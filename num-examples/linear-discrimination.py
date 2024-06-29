@@ -3,7 +3,7 @@ import json
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-from sklearn.datasets import load_iris 
+from sklearn.datasets import load_iris # load_wine load_iris
 from sklearn.preprocessing import StandardScaler, LabelEncoder
 from sklearn.model_selection import train_test_split
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
@@ -16,21 +16,14 @@ dataset = pd.DataFrame(columns=iris.feature_names,
                        data=iris.data)
 dataset['target'] = iris.target
 
-print(dataset)
-
 # sepal length (cm)  sepal width (cm)  petal length (cm)  petal width (cm)
 
 # dataset.drop(columns=['sepal length (cm)', 'sepal width (cm)'], inplace=True)
-
-print(dataset)
 
 # divide the dataset into class and target variable
 # X = dataset.iloc[:, 0:4].values # class
 X = dataset.iloc[:, 0:4].values # class
 y = dataset.iloc[:, 4].values # target
-
-print(X)
-print(y)
 
 # Preprocess the dataset and divide into train and test
 sc = StandardScaler()
@@ -45,8 +38,6 @@ X_train, X_test,\
 lda = LinearDiscriminantAnalysis(n_components=2)
 X_train = lda.fit_transform(X_train, y_train)
 X_test = lda.transform(X_test)
-
-print(X_train)
 
 # plot the scatterplot
 plt.scatter(
